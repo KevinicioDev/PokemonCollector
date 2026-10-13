@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Pokémon Portfolio API
+  version: 1.0.0
+  description: Contrato de la API para buscar cartas y gestionar el portafolio.
+servers:
+  - url: http://localhost:3000
+    description: Servidor de desarrollo local
+paths:
+  /api/search:
+    get:
+      summary: Obtener la busqueda de pokemones
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+      description: Retorna el resultado de la busqueda
+      responses:
+        "200":
+          description: Operacion exitosa!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    imageURL:
+                      type: string
+                    marketPrice:
+                      type: number
+  /api/inventory:
+    post:
+      summary: Guardar una carta en la coleccion
+      description: Recibe los datos de una carta y los precios de mercado para guardarla en la base de datos
+      #Debe ser requestBody para que viajen seguros los datos en la URL
+      requestBody:
+        #usamos la propiedad required: dentro del schema para decirle al contrato: "Está prohibido que el frontend intente guardar una carta si no me envía el ID, el nombre y cuánto le costó"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cardId
+                - name
+                - purchasePrice
+              properties:
+                cardId: 
+                  type: string
+                name:
+                  type: string
+                imageURL:
+                  type: string
+                purchasePrice:
+                  type: number
+      responses:
+        "201":
+          description: Carta guardada exitosamente!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /api/portfolio:
+    get:
+      summary: Obtener el resumen del valor de la coleccion
+      responses:
+        "200":
+          description: Resumen financiero
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalCards:
+                    type: integer
+                  totalInvested:
+                    type: number
+                  currentMarketValue:
+                    type: number
+  # A partir de aquí comienza tu reto
